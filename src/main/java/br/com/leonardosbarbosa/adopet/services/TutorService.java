@@ -1,8 +1,11 @@
 package br.com.leonardosbarbosa.adopet.services;
 
 import br.com.leonardosbarbosa.adopet.dto.TutorDTO;
+import br.com.leonardosbarbosa.adopet.dto.request.CreateTutorRequest;
+import br.com.leonardosbarbosa.adopet.dto.response.CreateTutorResponse;
 import br.com.leonardosbarbosa.adopet.entities.Tutor;
 import br.com.leonardosbarbosa.adopet.repositories.TutorRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +18,8 @@ public class TutorService {
 
     @Autowired
     private TutorRepository tutorRepository;
+    @Autowired
+    ModelMapper modelMapper;
 
     public Page<TutorDTO> findAll(Pageable pageRequest) {
         Page<Tutor> tutorsPage = tutorRepository.findAll(pageRequest);
@@ -22,10 +27,10 @@ public class TutorService {
         return tutorsPage.map(TutorDTO::new);
     }
 
-    public TutorDTO createNew(TutorDTO tutor) {
-        Tutor tutorEntity = new Tutor(tutor);
+    public CreateTutorResponse createNew(CreateTutorRequest tutor) {
+        Tutor tutorEntity = modelMapper.map(tutor, Tutor.class);
         tutorEntity = tutorRepository.save(tutorEntity);
-        return new TutorDTO(tutorEntity);
+        return modelMapper.map(tutorEntity, CreateTutorResponse.class);
     }
 
     public TutorDTO update(Long id, TutorDTO dto) {

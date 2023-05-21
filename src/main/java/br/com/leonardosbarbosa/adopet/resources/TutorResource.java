@@ -1,6 +1,8 @@
 package br.com.leonardosbarbosa.adopet.resources;
 
 import br.com.leonardosbarbosa.adopet.dto.TutorDTO;
+import br.com.leonardosbarbosa.adopet.dto.request.CreateTutorRequest;
+import br.com.leonardosbarbosa.adopet.dto.response.CreateTutorResponse;
 import br.com.leonardosbarbosa.adopet.services.TutorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -9,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
@@ -29,12 +32,12 @@ public class TutorResource {
     }
 
     @PostMapping
-    public ResponseEntity<TutorDTO> createNew(@RequestBody TutorDTO tutor) {
-        tutor = tutorService.createNew(tutor);
+    public ResponseEntity<CreateTutorResponse> createNew(@RequestBody @Valid CreateTutorRequest tutor) {
+        CreateTutorResponse createdTutor = tutorService.createNew(tutor);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(tutor.getId()).toUri();
+                .buildAndExpand(createdTutor.getId()).toUri();
 
-        return ResponseEntity.created(uri).body(tutor);
+        return ResponseEntity.created(uri).body(createdTutor);
     }
 
     @PutMapping("{id}")
