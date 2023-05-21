@@ -23,6 +23,11 @@ public class TutorResource {
         return ResponseEntity.ok(tutorService.findAll(pageRequest));
     }
 
+    @GetMapping("{id}")
+    public ResponseEntity<TutorDTO> findById(@PathVariable Long id) {
+        return ResponseEntity.ok(tutorService.findById(id));
+    }
+
     @PostMapping
     public ResponseEntity<TutorDTO> createNew(@RequestBody TutorDTO tutor) {
         tutor = tutorService.createNew(tutor);

@@ -58,4 +58,9 @@ public class TutorService {
             entity.setAbout(dto.getAbout());
         }
     }
+
+    public TutorDTO findById(Long id) {
+        Tutor tutor = tutorRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        return new TutorDTO(tutor);
+    }
 }
