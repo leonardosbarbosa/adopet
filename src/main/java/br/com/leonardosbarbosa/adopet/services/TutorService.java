@@ -6,7 +6,6 @@ import br.com.leonardosbarbosa.adopet.dto.response.CreateTutorResponse;
 import br.com.leonardosbarbosa.adopet.entities.Tutor;
 import br.com.leonardosbarbosa.adopet.repositories.TutorRepository;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -16,10 +15,13 @@ import javax.persistence.EntityNotFoundException;
 @Service
 public class TutorService {
 
-    @Autowired
-    private TutorRepository tutorRepository;
-    @Autowired
-    ModelMapper modelMapper;
+    private final TutorRepository tutorRepository;
+    private final ModelMapper modelMapper;
+
+    public TutorService(TutorRepository tutorRepository, ModelMapper modelMapper) {
+        this.tutorRepository = tutorRepository;
+        this.modelMapper = modelMapper;
+    }
 
     public Page<TutorDTO> findAll(Pageable pageRequest) {
         Page<Tutor> tutorsPage = tutorRepository.findAll(pageRequest);
