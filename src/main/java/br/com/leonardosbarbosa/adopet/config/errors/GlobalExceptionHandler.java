@@ -26,14 +26,15 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<StandardError> argumentNotValid(MethodArgumentNotValidException e, HttpServletRequest request) {
+    public ResponseEntity<ValidationError> argumentNotValid(MethodArgumentNotValidException e, HttpServletRequest request) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
-        StandardError error = new StandardError();
-        error.setTimestamp(Instant.now());
-        error.setError("Invalid request arguments");
-        error.setMessage(e.getMessage());
-        error.setPath(request.getRequestURI());
-        return ResponseEntity.status(status).body(error);
+        ValidationError errorMsg = new ValidationError();
+        errorMsg.setTimestamp(Instant.now());
+        errorMsg.setError("Invalid request arguments");
+        errorMsg.setMessage("The request contains invalid fields");
+        errorMsg.setPath(request.getRequestURI());
+        e.getBindingResult().getFieldErrors().forEach(fieldError -> errorMsg.addError(fieldError.getField(), fieldError.getDefaultMessage()));
+        return ResponseEntity.status(status).body(errorMsg);
     }
 
     @ExceptionHandler(DuplicatedEmailException.class)
