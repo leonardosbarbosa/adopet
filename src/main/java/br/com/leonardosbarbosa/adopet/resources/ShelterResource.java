@@ -40,4 +40,11 @@ public class ShelterResource {
 
         return ResponseEntity.created(uri).body(shelter);
     }
+
+    @PutMapping("{id}")
+    public ResponseEntity<ShelterDTO> updateById(@PathVariable Long id, @RequestBody ShelterDTO shelter) {
+        shelter = shelterService.updateById(id, shelter);
+
+        return ResponseEntity.ok(shelter);
+    }
 }

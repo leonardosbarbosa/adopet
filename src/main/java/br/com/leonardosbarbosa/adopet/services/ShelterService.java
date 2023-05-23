@@ -44,4 +44,14 @@ public class ShelterService {
 
         return sheltersPaged.map(ShelterDTO::new);
     }
+
+    public ShelterDTO updateById(Long id, ShelterDTO shelter) {
+        Shelter shelterEntity = shelterRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(NONEXISTENT_SHELTER_MESSAGE));
+
+        shelterEntity.updateFields(shelter);
+       shelterEntity =  shelterRepository.save(shelterEntity);
+
+       return modelMapper.map(shelterEntity, ShelterDTO.class);
+    }
 }

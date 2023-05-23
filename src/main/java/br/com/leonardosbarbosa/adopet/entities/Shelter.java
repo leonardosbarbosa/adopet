@@ -1,5 +1,6 @@
 package br.com.leonardosbarbosa.adopet.entities;
 
+import br.com.leonardosbarbosa.adopet.dto.ShelterDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,4 +23,14 @@ public class Shelter {
     private String location;
     @OneToMany(mappedBy = "shelter", fetch = FetchType.EAGER)
     private final List<Pet> pets = new ArrayList<>();
+
+    public void updateFields(ShelterDTO shelterDTO) {
+
+        if (shelterDTO.getName() != null) {
+            this.name = shelterDTO.getName();
+        }
+        if (shelterDTO.getLocation() != null) {
+            this.location = shelterDTO.getLocation();
+        }
+    }
 }
