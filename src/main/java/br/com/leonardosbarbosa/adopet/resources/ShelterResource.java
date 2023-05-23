@@ -2,11 +2,10 @@ package br.com.leonardosbarbosa.adopet.resources;
 
 import br.com.leonardosbarbosa.adopet.dto.ShelterDTO;
 import br.com.leonardosbarbosa.adopet.services.ShelterService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
@@ -20,6 +19,16 @@ public class ShelterResource {
 
     public ShelterResource(ShelterService shelterService) {
         this.shelterService = shelterService;
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<ShelterDTO>> findAll(Pageable pageRequest) {
+        return ResponseEntity.ok(shelterService.findAll(pageRequest));
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<ShelterDTO> findById(@PathVariable Long id) {
+        return ResponseEntity.ok(shelterService.findById(id));
     }
 
     @PostMapping

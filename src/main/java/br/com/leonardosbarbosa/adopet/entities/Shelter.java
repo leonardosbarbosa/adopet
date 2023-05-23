@@ -20,6 +20,6 @@ public class Shelter {
     private Long id;
     private String name;
     private String location;
-    @OneToMany(mappedBy = "shelter")
+    @OneToMany(mappedBy = "shelter", fetch = FetchType.EAGER)
     private final List<Pet> pets = new ArrayList<>();
 }
