@@ -5,6 +5,7 @@ import br.com.leonardosbarbosa.adopet.dto.ShelterDTO;
 import br.com.leonardosbarbosa.adopet.entities.Shelter;
 import br.com.leonardosbarbosa.adopet.repositories.ShelterRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,7 @@ public class ShelterService {
 
     public ShelterDTO findById(Long id) {
         Shelter shelter = shelterRepository.findById(id)
-                .orElseThrow(()-> new ResourceNotFoundException(NONEXISTENT_SHELTER_MESSAGE));
+                .orElseThrow(() -> new ResourceNotFoundException(NONEXISTENT_SHELTER_MESSAGE));
 
         return modelMapper.map(shelter, ShelterDTO.class);
     }
@@ -50,8 +51,16 @@ public class ShelterService {
                 .orElseThrow(() -> new ResourceNotFoundException(NONEXISTENT_SHELTER_MESSAGE));
 
         shelterEntity.updateFields(shelter);
-       shelterEntity =  shelterRepository.save(shelterEntity);
+        shelterEntity = shelterRepository.save(shelterEntity);
 
-       return modelMapper.map(shelterEntity, ShelterDTO.class);
+        return modelMapper.map(shelterEntity, ShelterDTO.class);
+    }
+
+    public void deleteById(Long id) {
+        try {
+            shelterRepository.deleteById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new ResourceNotFoundException(NONEXISTENT_SHELTER_MESSAGE);
+        }
     }
 }

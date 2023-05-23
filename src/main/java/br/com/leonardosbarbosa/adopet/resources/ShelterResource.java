@@ -47,4 +47,11 @@ public class ShelterResource {
 
         return ResponseEntity.ok(shelter);
     }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+        shelterService.deleteById(id);
+
+        return ResponseEntity.noContent().build();
+    }
 }
