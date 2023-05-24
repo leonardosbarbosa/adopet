@@ -2,6 +2,8 @@ package br.com.leonardosbarbosa.adopet.resources;
 
 import br.com.leonardosbarbosa.adopet.dto.PetDTO;
 import br.com.leonardosbarbosa.adopet.services.PetService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +17,11 @@ public class PetResource {
 
     public PetResource(PetService petService) {
         this.petService = petService;
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<PetDTO>> findAll(Pageable pageRequest) {
+        return ResponseEntity.ok(petService.findAll(pageRequest));
     }
 
     @PostMapping
