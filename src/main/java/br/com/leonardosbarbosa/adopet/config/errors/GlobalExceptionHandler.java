@@ -1,5 +1,6 @@
 package br.com.leonardosbarbosa.adopet.config.errors;
 
+import br.com.leonardosbarbosa.adopet.config.errors.exceptions.DatabaseException;
 import br.com.leonardosbarbosa.adopet.config.errors.exceptions.DuplicatedEmailException;
 import br.com.leonardosbarbosa.adopet.config.errors.exceptions.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -38,11 +39,22 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(DuplicatedEmailException.class)
-    public ResponseEntity<StandardError> argumentNotValid(DuplicatedEmailException e, HttpServletRequest request) {
+    public ResponseEntity<StandardError> duplicatedEmail(DuplicatedEmailException e, HttpServletRequest request) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         StandardError error = new StandardError();
         error.setTimestamp(Instant.now());
         error.setError("Duplicated email");
+        error.setMessage(e.getMessage());
+        error.setPath(request.getRequestURI());
+        return ResponseEntity.status(status).body(error);
+    }
+
+    @ExceptionHandler(DatabaseException.class)
+    public ResponseEntity<StandardError> databaseException(DatabaseException e, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        StandardError error = new StandardError();
+        error.setTimestamp(Instant.now());
+        error.setError("Database exception");
         error.setMessage(e.getMessage());
         error.setPath(request.getRequestURI());
         return ResponseEntity.status(status).body(error);
