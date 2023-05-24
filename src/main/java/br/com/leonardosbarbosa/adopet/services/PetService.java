@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import static br.com.leonardosbarbosa.adopet.config.errors.messages.PetErrorMessages.NONEXISTENT_PET_MESSAGE;
 import static br.com.leonardosbarbosa.adopet.config.errors.messages.PetErrorMessages.NO_PETS_REGISTERED_MESSAGE;
 import static br.com.leonardosbarbosa.adopet.config.errors.messages.ShelterErrorMessages.NONEXISTENT_SHELTER_MESSAGE;
 
@@ -39,5 +40,12 @@ public class PetService {
             throw new ResourceNotFoundException(NO_PETS_REGISTERED_MESSAGE);
 
         return pets.map(PetDTO::new);
+    }
+
+    public PetDTO findById(Long id) {
+        Pet pet = petRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(NONEXISTENT_PET_MESSAGE));
+
+        return new PetDTO(pet);
     }
 }

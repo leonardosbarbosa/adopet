@@ -24,6 +24,12 @@ public class PetResource {
         return ResponseEntity.ok(petService.findAll(pageRequest));
     }
 
+    @GetMapping("{id}")
+    public ResponseEntity<PetDTO> findById(@PathVariable Long id) {
+        PetDTO pet = petService.findById(id);
+        return ResponseEntity.ok(pet);
+    }
+
     @PostMapping
     public ResponseEntity<PetDTO> createNew(@RequestBody @Valid PetDTO pet) {
         pet = petService.createNew(pet);
