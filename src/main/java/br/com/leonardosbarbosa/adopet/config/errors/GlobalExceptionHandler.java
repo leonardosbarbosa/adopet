@@ -1,5 +1,6 @@
 package br.com.leonardosbarbosa.adopet.config.errors;
 
+import br.com.leonardosbarbosa.adopet.config.errors.exceptions.BusinessException;
 import br.com.leonardosbarbosa.adopet.config.errors.exceptions.DatabaseException;
 import br.com.leonardosbarbosa.adopet.config.errors.exceptions.DuplicatedEmailException;
 import br.com.leonardosbarbosa.adopet.config.errors.exceptions.ResourceNotFoundException;
@@ -55,6 +56,17 @@ public class GlobalExceptionHandler {
         StandardError error = new StandardError();
         error.setTimestamp(Instant.now());
         error.setError("Database exception");
+        error.setMessage(e.getMessage());
+        error.setPath(request.getRequestURI());
+        return ResponseEntity.status(status).body(error);
+    }
+
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<StandardError> businessException(BusinessException e, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        StandardError error = new StandardError();
+        error.setTimestamp(Instant.now());
+        error.setError("Business Exception");
         error.setMessage(e.getMessage());
         error.setPath(request.getRequestURI());
         return ResponseEntity.status(status).body(error);

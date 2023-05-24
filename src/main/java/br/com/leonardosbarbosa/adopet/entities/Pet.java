@@ -32,16 +32,30 @@ public class Pet {
     private Shelter shelter;
 
     public Pet(PetDTO pet) {
+        this.name = pet.getName();
+        this.description = pet.getDescription();
+        this.age = pet.getAge();
+        this.adopted = false;
+        this.image = pet.getImage();
+        this.shelter = new Shelter();
+        this.shelter.setId(pet.getShelterId());
+    }
+
+    public void updateFields(PetDTO pet) {
         if (pet.getName() != null)
             this.name = pet.getName();
         if (pet.getDescription() != null)
             this.description = pet.getDescription();
         if (pet.getAge() != null)
             this.age = pet.getAge();
-        this.adopted = false;
+        if (pet.getAdopted() != null)
+            this.adopted = pet.getAdopted();
         if (pet.getImage() != null)
             this.image = pet.getImage();
-        shelter = new Shelter();
-        shelter.setId(pet.getShelterId());
+
+        if (pet.getShelterId() != null) {
+            this.shelter = new Shelter();
+            this.shelter.setId(pet.getShelterId());
+        }
     }
 }

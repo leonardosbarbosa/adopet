@@ -35,4 +35,16 @@ public class PetResource {
         pet = petService.createNew(pet);
         return ResponseEntity.ok(pet);
     }
+
+    @PutMapping("{id}")
+    public ResponseEntity<PetDTO> updateById(@PathVariable Long id, @RequestBody PetDTO pet) {
+        pet = petService.updateById(id, pet);
+        return ResponseEntity.ok(pet);
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+        petService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
 }
