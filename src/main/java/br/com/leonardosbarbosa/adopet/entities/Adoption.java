@@ -1,10 +1,17 @@
 package br.com.leonardosbarbosa.adopet.entities;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.time.Instant;
 
 @Entity
 @Table(name = "tb_adoption")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Adoption {
 
     @Id
