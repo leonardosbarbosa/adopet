@@ -5,10 +5,10 @@ import br.com.leonardosbarbosa.adopet.services.AdoptionService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/adoptions")
@@ -29,5 +29,16 @@ public class AdoptionResource {
     @GetMapping("{id}")
     public ResponseEntity<AdoptionDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));
+    }
+
+    @PostMapping
+    public ResponseEntity<AdoptionDTO> createNew(@RequestBody AdoptionDTO adoption) {
+
+        adoption = service.createNew(adoption);
+
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(adoption.getId()).toUri();
+
+        return ResponseEntity.created(uri).body(adoption);
     }
 }

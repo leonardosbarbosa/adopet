@@ -1,15 +1,18 @@
 package br.com.leonardosbarbosa.adopet.services;
 
+import br.com.leonardosbarbosa.adopet.config.errors.exceptions.DatabaseException;
 import br.com.leonardosbarbosa.adopet.config.errors.exceptions.ResourceNotFoundException;
 import br.com.leonardosbarbosa.adopet.dto.AdoptionDTO;
 import br.com.leonardosbarbosa.adopet.entities.Adoption;
 import br.com.leonardosbarbosa.adopet.repositories.AdoptionRepository;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import static br.com.leonardosbarbosa.adopet.config.errors.messages.AdoptionErrorMessages.NONEXISTENT_ADOPTION_MESSAGE;
-import static br.com.leonardosbarbosa.adopet.config.errors.messages.AdoptionErrorMessages.NO_ADOPTIONS_REGISTERED_MESSAGE;
+import java.time.Instant;
+
+import static br.com.leonardosbarbosa.adopet.config.errors.messages.AdoptionErrorMessages.*;
 
 @Service
 public class AdoptionService {
@@ -34,5 +37,16 @@ public class AdoptionService {
                 .orElseThrow(() -> new ResourceNotFoundException(NONEXISTENT_ADOPTION_MESSAGE));
 
         return new AdoptionDTO(adoption);
+    }
+
+    public AdoptionDTO createNew(AdoptionDTO adoption) {
+        try {
+            Adoption entity = new Adoption(adoption);
+            entity.setDate(Instant.now());
+            entity = adoptionRepository.save(entity);
+            return new AdoptionDTO(entity);
+        } catch (DataIntegrityViolationException e) {
+            throw new DatabaseException(DEFAULT_ADOPTION_INTEGRITY_VIOLATION_MESSAGE);
+        }
     }
 }

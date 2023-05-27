@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "tb_tutor")
@@ -27,6 +29,8 @@ public class Tutor {
     private String city;
     private String about;
     private String profilePic;
+    @OneToMany(mappedBy = "tutor")
+    private final List<Adoption> adoptions = new ArrayList<>();
 
     public Tutor(TutorDTO tutor) {
         this.id = tutor.getId();

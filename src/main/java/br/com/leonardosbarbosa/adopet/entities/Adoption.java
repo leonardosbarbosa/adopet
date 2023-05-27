@@ -1,5 +1,6 @@
 package br.com.leonardosbarbosa.adopet.entities;
 
+import br.com.leonardosbarbosa.adopet.dto.AdoptionDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,12 +18,19 @@ public class Adoption {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "pet_id", referencedColumnName = "id", nullable = false, unique = true)
     private Pet pet;
     @ManyToOne
     @JoinColumn(name = "tutor_id", nullable = false)
     private Tutor tutor;
-    @Column(nullable = false)
+    @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE", nullable = false)
     private Instant date;
+
+    public Adoption(AdoptionDTO adoption) {
+        this.pet = new Pet();
+        this.pet.setId(adoption.getPetId());
+        this.tutor = new Tutor();
+        this.tutor.setId(adoption.getTutorId());
+    }
 }
