@@ -41,4 +41,10 @@ public class AdoptionResource {
 
         return ResponseEntity.created(uri).body(adoption);
     }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+        service.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
 }

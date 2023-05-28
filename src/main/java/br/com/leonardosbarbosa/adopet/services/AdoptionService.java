@@ -6,6 +6,7 @@ import br.com.leonardosbarbosa.adopet.dto.AdoptionDTO;
 import br.com.leonardosbarbosa.adopet.entities.Adoption;
 import br.com.leonardosbarbosa.adopet.repositories.AdoptionRepository;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -47,6 +48,16 @@ public class AdoptionService {
             return new AdoptionDTO(entity);
         } catch (DataIntegrityViolationException e) {
             throw new DatabaseException(DEFAULT_ADOPTION_INTEGRITY_VIOLATION_MESSAGE);
+        }
+    }
+
+    public void deleteById(Long id) {
+        try {
+            adoptionRepository.deleteById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new ResourceNotFoundException(NONEXISTENT_ADOPTION_MESSAGE);
+        } catch (DataIntegrityViolationException e) {
+            throw new DatabaseException(DELETE_ADOPTION_INTEGRITY_VIOLATION_MESSAGE);
         }
     }
 }
