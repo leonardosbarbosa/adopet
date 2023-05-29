@@ -53,7 +53,7 @@ public class TutorResource {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<TutorDTO> updateById(@PathVariable Long id, @RequestBody TutorDTO tutor) {
+    public ResponseEntity<TutorDTO> updateById(@PathVariable Long id, @RequestBody @Valid TutorDTO tutor) {
         tutor = tutorService.update(id, tutor);
 
         return ResponseEntity.ok(tutor);
