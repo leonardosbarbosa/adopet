@@ -24,7 +24,6 @@ public class Shelter {
     @OneToMany(mappedBy = "shelter", fetch = FetchType.EAGER)
     private final List<Pet> pets = new ArrayList<>();
 
-
     public Shelter(String name, String location) {
         this.name = name;
         this.location = location;
