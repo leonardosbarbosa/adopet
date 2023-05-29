@@ -1,10 +1,11 @@
 package br.com.leonardosbarbosa.adopet.services;
 
 import br.com.leonardosbarbosa.adopet.config.errors.exceptions.ResourceNotFoundException;
-import br.com.leonardosbarbosa.adopet.dto.ShelterDTO;
+import br.com.leonardosbarbosa.adopet.dto.request.CreateShelterRequest;
+import br.com.leonardosbarbosa.adopet.dto.request.UpdateShelterRequest;
+import br.com.leonardosbarbosa.adopet.dto.response.ShelterResponse;
 import br.com.leonardosbarbosa.adopet.entities.Shelter;
 import br.com.leonardosbarbosa.adopet.repositories.ShelterRepository;
-import org.modelmapper.ModelMapper;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,44 +17,42 @@ import static br.com.leonardosbarbosa.adopet.config.errors.messages.ShelterError
 @Service
 public class ShelterService {
 
-    private final ModelMapper modelMapper;
     private final ShelterRepository shelterRepository;
 
-    public ShelterService(ModelMapper modelMapper, ShelterRepository shelterRepository) {
-        this.modelMapper = modelMapper;
+    public ShelterService(ShelterRepository shelterRepository) {
         this.shelterRepository = shelterRepository;
     }
 
-    public ShelterDTO createNew(ShelterDTO shelter) {
-        Shelter shelterEntity = modelMapper.map(shelter, Shelter.class);
-        shelterEntity = shelterRepository.save(shelterEntity);
-        return modelMapper.map(shelterEntity, ShelterDTO.class);
+    public ShelterResponse createNew(CreateShelterRequest shelter) {
+        Shelter newShelter = new Shelter(shelter.getName(), shelter.getLocation());
+        newShelter = shelterRepository.save(newShelter);
+        return new ShelterResponse(newShelter);
     }
 
-    public ShelterDTO findById(Long id) {
+    public ShelterResponse findById(Long id) {
         Shelter shelter = shelterRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(NONEXISTENT_SHELTER_MESSAGE));
 
-        return modelMapper.map(shelter, ShelterDTO.class);
+        return new ShelterResponse(shelter);
     }
 
-    public Page<ShelterDTO> findAll(Pageable pageRequest) {
+    public Page<ShelterResponse> findAll(Pageable pageRequest) {
         Page<Shelter> sheltersPaged = shelterRepository.findAll(pageRequest);
 
         if (sheltersPaged.isEmpty())
             throw new ResourceNotFoundException(NO_SHELTERS_REGISTERED_MESSAGE);
 
-        return sheltersPaged.map(ShelterDTO::new);
+        return sheltersPaged.map(ShelterResponse::new);
     }
 
-    public ShelterDTO updateById(Long id, ShelterDTO shelter) {
+    public ShelterResponse updateById(Long id, UpdateShelterRequest shelter) {
         Shelter shelterEntity = shelterRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(NONEXISTENT_SHELTER_MESSAGE));
 
         shelterEntity.updateFields(shelter);
         shelterEntity = shelterRepository.save(shelterEntity);
 
-        return modelMapper.map(shelterEntity, ShelterDTO.class);
+        return new ShelterResponse(shelterEntity);
     }
 
     public void deleteById(Long id) {
