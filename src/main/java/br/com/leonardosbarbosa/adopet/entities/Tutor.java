@@ -1,30 +1,25 @@
 package br.com.leonardosbarbosa.adopet.entities;
 
 import br.com.leonardosbarbosa.adopet.dto.TutorDTO;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "tb_tutor")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Tutor {
+public class Tutor extends User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
     @Column(nullable = false)
     private String fullName;
-    @Column(unique = true, nullable = false)
-    private String email;
-    @Column(nullable = false)
-    private String password;
     private String phone;
     private String city;
     private String about;
@@ -33,10 +28,10 @@ public class Tutor {
     private final List<Adoption> adoptions = new ArrayList<>();
 
     public Tutor(TutorDTO tutor) {
-        this.id = tutor.getId();
+        this.setId(tutor.getId());
         this.fullName = tutor.getFullName();
-        this.email = tutor.getEmail();
-        this.password = tutor.getPassword();
+        this.setEmail(tutor.getEmail());
+        this.setPassword(tutor.getPassword());
         this.phone = tutor.getPhone();
         this.city = tutor.getCity();
         this.about = tutor.getAbout();

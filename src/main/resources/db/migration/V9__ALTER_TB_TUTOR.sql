@@ -1,0 +1,6 @@
+ALTER TABLE TB_TUTOR
+DROP COLUMN email,
+DROP COLUMN password;
+
+
+
