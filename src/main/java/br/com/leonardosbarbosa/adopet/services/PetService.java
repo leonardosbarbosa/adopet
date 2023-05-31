@@ -13,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.stereotype.Service;
 
+import static br.com.leonardosbarbosa.adopet.config.errors.messages.DefaultMessages.CREATE_RESOURCE_INTEGRITY_VIOLATION_MESSAGE;
+import static br.com.leonardosbarbosa.adopet.config.errors.messages.DefaultMessages.DELETE_RESOURCE_INTEGRITY_VIOLATION_MESSAGE;
 import static br.com.leonardosbarbosa.adopet.config.errors.messages.PetErrorMessages.*;
 import static br.com.leonardosbarbosa.adopet.config.errors.messages.ShelterErrorMessages.NONEXISTENT_SHELTER_MESSAGE;
 
@@ -31,7 +33,7 @@ public class PetService {
             entity = petRepository.save(entity);
             return new PetDTO(entity);
         } catch (DataIntegrityViolationException e) {
-            throw new DatabaseException(DEFAULT_PET_INTEGRITY_VIOLATION_MESSAGE);
+            throw new DatabaseException(CREATE_RESOURCE_INTEGRITY_VIOLATION_MESSAGE);
         }
     }
 
@@ -70,7 +72,7 @@ public class PetService {
         } catch (EmptyResultDataAccessException e) {
             throw new ResourceNotFoundException(NONEXISTENT_PET_MESSAGE);
         } catch (DataIntegrityViolationException e) {
-            throw new DatabaseException(DELETE_PET_INTEGRITY_VIOLATION_MESSAGE);
+            throw new DatabaseException(DELETE_RESOURCE_INTEGRITY_VIOLATION_MESSAGE);
         }
     }
 }

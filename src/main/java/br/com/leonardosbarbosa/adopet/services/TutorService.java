@@ -1,6 +1,6 @@
 package br.com.leonardosbarbosa.adopet.services;
 
-import br.com.leonardosbarbosa.adopet.config.errors.exceptions.DuplicatedEmailException;
+import br.com.leonardosbarbosa.adopet.config.errors.exceptions.DatabaseException;
 import br.com.leonardosbarbosa.adopet.config.errors.exceptions.ResourceNotFoundException;
 import br.com.leonardosbarbosa.adopet.dto.TutorDTO;
 import br.com.leonardosbarbosa.adopet.dto.request.CreateTutorRequest;
@@ -14,7 +14,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import static br.com.leonardosbarbosa.adopet.config.errors.messages.TutorErrorMessages.*;
+import static br.com.leonardosbarbosa.adopet.config.errors.messages.DefaultMessages.CREATE_RESOURCE_INTEGRITY_VIOLATION_MESSAGE;
+import static br.com.leonardosbarbosa.adopet.config.errors.messages.TutorErrorMessages.NONEXISTENT_TUTOR_MESSAGE;
+import static br.com.leonardosbarbosa.adopet.config.errors.messages.TutorErrorMessages.NONEXISTENT_TUTOR_TO_DELETE;
 
 @Service
 public class TutorService {
@@ -40,7 +42,7 @@ public class TutorService {
             return modelMapper.map(tutorEntity, CreateTutorResponse.class);
 
         } catch (DataIntegrityViolationException e) {
-            throw new DuplicatedEmailException(DUPLICATED_TUTOR_EMAIL);
+            throw new DatabaseException(CREATE_RESOURCE_INTEGRITY_VIOLATION_MESSAGE);
         }
     }
 

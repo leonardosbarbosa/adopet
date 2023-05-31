@@ -15,7 +15,10 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 
-import static br.com.leonardosbarbosa.adopet.config.errors.messages.AdoptionErrorMessages.*;
+import static br.com.leonardosbarbosa.adopet.config.errors.messages.AdoptionErrorMessages.NONEXISTENT_ADOPTION_MESSAGE;
+import static br.com.leonardosbarbosa.adopet.config.errors.messages.AdoptionErrorMessages.NO_ADOPTIONS_REGISTERED_MESSAGE;
+import static br.com.leonardosbarbosa.adopet.config.errors.messages.DefaultMessages.CREATE_RESOURCE_INTEGRITY_VIOLATION_MESSAGE;
+import static br.com.leonardosbarbosa.adopet.config.errors.messages.DefaultMessages.DELETE_RESOURCE_INTEGRITY_VIOLATION_MESSAGE;
 import static br.com.leonardosbarbosa.adopet.config.errors.messages.PetErrorMessages.NONEXISTENT_PET_MESSAGE;
 
 @Service
@@ -53,7 +56,7 @@ public class AdoptionService {
             setPetAdoptionStatus(entity.getPet().getId(), true);
             return new AdoptionDTO(entity);
         } catch (DataIntegrityViolationException e) {
-            throw new DatabaseException(DEFAULT_ADOPTION_INTEGRITY_VIOLATION_MESSAGE);
+            throw new DatabaseException(CREATE_RESOURCE_INTEGRITY_VIOLATION_MESSAGE);
         }
     }
 
@@ -65,7 +68,7 @@ public class AdoptionService {
         } catch (EmptyResultDataAccessException e) {
             throw new ResourceNotFoundException(NONEXISTENT_ADOPTION_MESSAGE);
         } catch (DataIntegrityViolationException e) {
-            throw new DatabaseException(DELETE_ADOPTION_INTEGRITY_VIOLATION_MESSAGE);
+            throw new DatabaseException(DELETE_RESOURCE_INTEGRITY_VIOLATION_MESSAGE);
         }
     }
 
