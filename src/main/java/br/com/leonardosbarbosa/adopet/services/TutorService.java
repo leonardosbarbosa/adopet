@@ -12,6 +12,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import static br.com.leonardosbarbosa.adopet.config.errors.messages.DefaultMessages.CREATE_RESOURCE_INTEGRITY_VIOLATION_MESSAGE;
@@ -23,10 +24,12 @@ public class TutorService {
 
     private final TutorRepository tutorRepository;
     private final ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
 
-    public TutorService(TutorRepository tutorRepository, ModelMapper modelMapper) {
+    public TutorService(TutorRepository tutorRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder) {
         this.tutorRepository = tutorRepository;
         this.modelMapper = modelMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public Page<TutorDTO> findAll(Pageable pageRequest) {
@@ -38,6 +41,7 @@ public class TutorService {
     public CreateTutorResponse createNew(CreateTutorRequest tutor) {
         try {
             Tutor tutorEntity = modelMapper.map(tutor, Tutor.class);
+            tutorEntity.setPassword(passwordEncoder.encode(tutor.getPassword()));
             tutorEntity = tutorRepository.save(tutorEntity);
             return modelMapper.map(tutorEntity, CreateTutorResponse.class);
 
