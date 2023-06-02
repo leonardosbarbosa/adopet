@@ -4,12 +4,20 @@ import br.com.leonardosbarbosa.adopet.config.errors.exceptions.ResourceNotFoundE
 import br.com.leonardosbarbosa.adopet.dto.request.CreateShelterRequest;
 import br.com.leonardosbarbosa.adopet.dto.request.UpdateShelterRequest;
 import br.com.leonardosbarbosa.adopet.dto.response.ShelterResponse;
+import br.com.leonardosbarbosa.adopet.entities.Role;
 import br.com.leonardosbarbosa.adopet.entities.Shelter;
+import br.com.leonardosbarbosa.adopet.projections.ShelterDetailsProjection;
 import br.com.leonardosbarbosa.adopet.repositories.ShelterRepository;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 import static br.com.leonardosbarbosa.adopet.config.errors.messages.ShelterErrorMessages.NONEXISTENT_SHELTER_MESSAGE;
 import static br.com.leonardosbarbosa.adopet.config.errors.messages.ShelterErrorMessages.NO_SHELTERS_REGISTERED_MESSAGE;
@@ -18,13 +26,16 @@ import static br.com.leonardosbarbosa.adopet.config.errors.messages.ShelterError
 public class ShelterService {
 
     private final ShelterRepository shelterRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public ShelterService(ShelterRepository shelterRepository) {
+    public ShelterService(ShelterRepository shelterRepository, PasswordEncoder passwordEncoder) {
         this.shelterRepository = shelterRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public ShelterResponse createNew(CreateShelterRequest shelter) {
-        Shelter newShelter = new Shelter(shelter.getName(), shelter.getLocation());
+        Shelter newShelter = new Shelter(shelter.getEmail(), passwordEncoder.encode(shelter.getPassword()),
+                shelter.getName(), shelter.getLocation());
         newShelter = shelterRepository.save(newShelter);
         return new ShelterResponse(newShelter);
     }
