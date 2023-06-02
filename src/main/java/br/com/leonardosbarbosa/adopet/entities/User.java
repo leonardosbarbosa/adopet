@@ -31,4 +31,8 @@ public abstract class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private final Set<Role> roles = new HashSet<>();
 
+    public User(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
 }

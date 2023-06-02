@@ -23,7 +23,7 @@ import static br.com.leonardosbarbosa.adopet.config.errors.messages.ShelterError
 import static br.com.leonardosbarbosa.adopet.config.errors.messages.ShelterErrorMessages.NO_SHELTERS_REGISTERED_MESSAGE;
 
 @Service
-public class ShelterService {
+public class ShelterService implements UserDetailsService {
 
     private final ShelterRepository shelterRepository;
     private final PasswordEncoder passwordEncoder;
@@ -72,5 +72,23 @@ public class ShelterService {
         } catch (EmptyResultDataAccessException e) {
             throw new ResourceNotFoundException(NONEXISTENT_SHELTER_MESSAGE);
         }
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        List<ShelterDetailsProjection> result = shelterRepository.searchUserAndRolesByEmail(username);
+        if (result.isEmpty())
+            throw new UsernameNotFoundException("User not found");
+
+        Shelter shelter = new Shelter();
+        shelter.setId(result.get(0).getId());
+        shelter.setEmail(result.get(0).getUsername());
+        shelter.setName(result.get(0).getName());
+        shelter.setLocation(result.get(0).getLocation());
+
+        result.forEach(r -> shelter.getRoles().add(new Role(r.getRoleId(), r.getAuthority())));
+
+
+        return shelter;
     }
 }
