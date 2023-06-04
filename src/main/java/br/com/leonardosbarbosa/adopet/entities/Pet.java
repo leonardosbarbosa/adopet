@@ -1,11 +1,10 @@
 package br.com.leonardosbarbosa.adopet.entities;
 
 import br.com.leonardosbarbosa.adopet.dto.PetDTO;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
 
 @Entity
 @Table(name = "tb_pet")
@@ -46,16 +45,13 @@ public class Pet {
             this.name = pet.getName();
         if (pet.getDescription() != null)
             this.description = pet.getDescription();
-        if (pet.getAge() != null)
-            this.age = pet.getAge();
+        this.age = pet.getAge();
         if (pet.getAdopted() != null)
             this.adopted = pet.getAdopted();
         if (pet.getImage() != null)
             this.image = pet.getImage();
 
-        if (pet.getShelterId() != null) {
-            this.shelter = new Shelter();
-            this.shelter.setId(pet.getShelterId());
-        }
+        this.shelter = new Shelter();
+        this.shelter.setId(pet.getShelterId());
     }
 }

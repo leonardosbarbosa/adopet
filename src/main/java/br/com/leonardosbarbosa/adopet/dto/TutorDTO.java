@@ -1,12 +1,11 @@
 package br.com.leonardosbarbosa.adopet.dto;
 
 import br.com.leonardosbarbosa.adopet.entities.Tutor;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Size;
 
 import static br.com.leonardosbarbosa.adopet.dto.validations.TutorValidationMessages.*;
 

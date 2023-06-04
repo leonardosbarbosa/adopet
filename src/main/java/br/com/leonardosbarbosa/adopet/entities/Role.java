@@ -1,10 +1,9 @@
 package br.com.leonardosbarbosa.adopet.entities;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
-
-import javax.persistence.*;
 
 @Entity
 @Table(name = "tb_role")

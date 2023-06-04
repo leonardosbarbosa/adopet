@@ -1,11 +1,11 @@
 package br.com.leonardosbarbosa.adopet.entities;
 
 import br.com.leonardosbarbosa.adopet.dto.AdoptionDTO;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import java.time.Instant;
 
 @Entity

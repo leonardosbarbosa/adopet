@@ -1,11 +1,10 @@
 package br.com.leonardosbarbosa.adopet.dto;
 
 import br.com.leonardosbarbosa.adopet.entities.Pet;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 @NoArgsConstructor
 @Data
