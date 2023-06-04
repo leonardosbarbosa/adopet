@@ -9,6 +9,7 @@ O Adopet é uma plataforma fictícia para conectar pessoas que desejam adotar an
 - Spring Data JPA
 - Spring Security
 - Maven
+- JUnit 5 
 - Postgres DB
 
 # Autor
