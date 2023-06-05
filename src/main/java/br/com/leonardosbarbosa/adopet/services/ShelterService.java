@@ -4,26 +4,19 @@ import br.com.leonardosbarbosa.adopet.config.errors.exceptions.ResourceNotFoundE
 import br.com.leonardosbarbosa.adopet.dto.request.CreateShelterRequest;
 import br.com.leonardosbarbosa.adopet.dto.request.UpdateShelterRequest;
 import br.com.leonardosbarbosa.adopet.dto.response.ShelterResponse;
-import br.com.leonardosbarbosa.adopet.entities.Role;
 import br.com.leonardosbarbosa.adopet.entities.Shelter;
-import br.com.leonardosbarbosa.adopet.projections.ShelterDetailsProjection;
 import br.com.leonardosbarbosa.adopet.repositories.ShelterRepository;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 import static br.com.leonardosbarbosa.adopet.config.errors.messages.ShelterErrorMessages.NONEXISTENT_SHELTER_MESSAGE;
 import static br.com.leonardosbarbosa.adopet.config.errors.messages.ShelterErrorMessages.NO_SHELTERS_REGISTERED_MESSAGE;
 
 @Service
-public class ShelterService implements UserDetailsService {
+public class ShelterService {
 
     private final ShelterRepository shelterRepository;
     private final PasswordEncoder passwordEncoder;
@@ -74,21 +67,21 @@ public class ShelterService implements UserDetailsService {
         }
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        List<ShelterDetailsProjection> result = shelterRepository.searchUserAndRolesByEmail(username);
-        if (result.isEmpty())
-            throw new UsernameNotFoundException("User not found");
-
-        Shelter shelter = new Shelter();
-        shelter.setId(result.get(0).getId());
-        shelter.setEmail(result.get(0).getUsername());
-        shelter.setName(result.get(0).getName());
-        shelter.setLocation(result.get(0).getLocation());
-
-        result.forEach(r -> shelter.getRoles().add(new Role(r.getRoleId(), r.getAuthority())));
-
-
-        return shelter;
-    }
+//    @Override
+//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//        List<ShelterDetailsProjection> result = shelterRepository.searchUserAndRolesByEmail(username);
+//        if (result.isEmpty())
+//            throw new UsernameNotFoundException("User not found");
+//
+//        Shelter shelter = new Shelter();
+//        shelter.setId(result.get(0).getId());
+//        shelter.setEmail(result.get(0).getUsername());
+//        shelter.setName(result.get(0).getName());
+//        shelter.setLocation(result.get(0).getLocation());
+//
+//        result.forEach(r -> shelter.getRoles().add(new Role(r.getRoleId(), r.getAuthority())));
+//
+//
+//        return shelter;
+//    }
 }

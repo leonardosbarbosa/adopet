@@ -5,29 +5,22 @@ import br.com.leonardosbarbosa.adopet.config.errors.exceptions.ResourceNotFoundE
 import br.com.leonardosbarbosa.adopet.dto.TutorDTO;
 import br.com.leonardosbarbosa.adopet.dto.request.CreateTutorRequest;
 import br.com.leonardosbarbosa.adopet.dto.response.CreateTutorResponse;
-import br.com.leonardosbarbosa.adopet.entities.Role;
 import br.com.leonardosbarbosa.adopet.entities.Tutor;
-import br.com.leonardosbarbosa.adopet.projections.TutorDetailsProjection;
 import br.com.leonardosbarbosa.adopet.repositories.TutorRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 import static br.com.leonardosbarbosa.adopet.config.errors.messages.DefaultMessages.CREATE_RESOURCE_INTEGRITY_VIOLATION_MESSAGE;
 import static br.com.leonardosbarbosa.adopet.config.errors.messages.TutorErrorMessages.NONEXISTENT_TUTOR_MESSAGE;
 import static br.com.leonardosbarbosa.adopet.config.errors.messages.TutorErrorMessages.NONEXISTENT_TUTOR_TO_DELETE;
 
 @Service
-public class TutorService implements UserDetailsService {
+public class TutorService {
 
     private final TutorRepository tutorRepository;
     private final ModelMapper modelMapper;
@@ -99,24 +92,24 @@ public class TutorService implements UserDetailsService {
         return new TutorDTO(tutor);
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        List<TutorDetailsProjection> result = tutorRepository.searchUserAndRolesByEmail(username);
-        if (result.isEmpty())
-            throw new UsernameNotFoundException("User not found");
-
-        Tutor tutor = new Tutor();
-        tutor.setId(result.get(0).getId());
-        tutor.setEmail(result.get(0).getUsername());
-        tutor.setCity(result.get(0).getCity());
-        tutor.setFullName(result.get(0).getFullName());
-        tutor.setAbout(result.get(0).getAbout());
-        tutor.setEmail(result.get(0).getUsername());
-        tutor.setPhone(result.get(0).getPhone());
-        tutor.setProfilePic(result.get(0).getProfilePic());
-        result.forEach(r -> tutor.getRoles().add(new Role(r.getRoleId(), r.getAuthority())));
-
-
-        return tutor;
-    }
+//    @Override
+//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//        List<TutorDetailsProjection> result = tutorRepository.searchUserAndRolesByEmail(username);
+//        if (result.isEmpty())
+//            throw new UsernameNotFoundException("User not found");
+//
+//        Tutor tutor = new Tutor();
+//        tutor.setId(result.get(0).getId());
+//        tutor.setEmail(result.get(0).getUsername());
+//        tutor.setCity(result.get(0).getCity());
+//        tutor.setFullName(result.get(0).getFullName());
+//        tutor.setAbout(result.get(0).getAbout());
+//        tutor.setEmail(result.get(0).getUsername());
+//        tutor.setPhone(result.get(0).getPhone());
+//        tutor.setProfilePic(result.get(0).getProfilePic());
+//        result.forEach(r -> tutor.getRoles().add(new Role(r.getRoleId(), r.getAuthority())));
+//
+//
+//        return tutor;
+//    }
 }
