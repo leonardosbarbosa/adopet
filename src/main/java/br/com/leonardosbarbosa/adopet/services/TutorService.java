@@ -94,25 +94,4 @@ public class TutorService {
                 .orElseThrow(() -> new ResourceNotFoundException(NONEXISTENT_TUTOR_MESSAGE));
         return new TutorDTO(tutor);
     }
-
-//    @Override
-//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//        List<TutorDetailsProjection> result = tutorRepository.searchUserAndRolesByEmail(username);
-//        if (result.isEmpty())
-//            throw new UsernameNotFoundException("User not found");
-//
-//        Tutor tutor = new Tutor();
-//        tutor.setId(result.get(0).getId());
-//        tutor.setEmail(result.get(0).getUsername());
-//        tutor.setCity(result.get(0).getCity());
-//        tutor.setFullName(result.get(0).getFullName());
-//        tutor.setAbout(result.get(0).getAbout());
-//        tutor.setEmail(result.get(0).getUsername());
-//        tutor.setPhone(result.get(0).getPhone());
-//        tutor.setProfilePic(result.get(0).getProfilePic());
-//        result.forEach(r -> tutor.getRoles().add(new Role(r.getRoleId(), r.getAuthority())));
-//
-//
-//        return tutor;
-//    }
 }
