@@ -5,7 +5,7 @@ O Adopet é uma plataforma fictícia para conectar pessoas que desejam adotar an
 
 # Tecnologias utilizadas
 - Java 17
-- Spring Boot (2.7.12)
+- Spring Boot (3.1.0)
 - Spring Data JPA
 - Spring Security
 - Maven
