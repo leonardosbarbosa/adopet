@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import static java.util.Objects.nonNull;
+
 @NoArgsConstructor
 @Data
 public class PetDTO {
@@ -30,6 +32,9 @@ public class PetDTO {
         this.age = entity.getAge();
         this.adopted = entity.getAdopted();
         this.image = entity.getImage();
-        this.shelterId = entity.getShelter().getId();
+
+        if (nonNull(entity.getShelter()))
+            this.shelterId = entity.getShelter().getId();
+
     }
 }
