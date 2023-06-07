@@ -44,7 +44,7 @@ public class TutorService {
         try {
             Tutor tutorEntity = modelMapper.map(tutor, Tutor.class);
             tutorEntity.setPassword(passwordEncoder.encode(tutor.getPassword()));
-            tutorEntity.getRoles().add(new Role(TUTOR.code));
+            tutorEntity.addRole(new Role(TUTOR.code));
             tutorEntity = tutorRepository.save(tutorEntity);
             return modelMapper.map(tutorEntity, CreateTutorResponse.class);
 

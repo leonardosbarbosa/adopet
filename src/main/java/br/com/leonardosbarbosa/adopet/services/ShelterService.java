@@ -4,6 +4,7 @@ import br.com.leonardosbarbosa.adopet.config.errors.exceptions.ResourceNotFoundE
 import br.com.leonardosbarbosa.adopet.dto.request.CreateShelterRequest;
 import br.com.leonardosbarbosa.adopet.dto.request.UpdateShelterRequest;
 import br.com.leonardosbarbosa.adopet.dto.response.ShelterResponse;
+import br.com.leonardosbarbosa.adopet.entities.Role;
 import br.com.leonardosbarbosa.adopet.entities.Shelter;
 import br.com.leonardosbarbosa.adopet.repositories.ShelterRepository;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import static br.com.leonardosbarbosa.adopet.config.errors.messages.ShelterErrorMessages.NONEXISTENT_SHELTER_MESSAGE;
 import static br.com.leonardosbarbosa.adopet.config.errors.messages.ShelterErrorMessages.NO_SHELTERS_REGISTERED_MESSAGE;
+import static br.com.leonardosbarbosa.adopet.services.enums.RolesEnum.SHELTER;
 
 @Service
 public class ShelterService {
@@ -29,6 +31,8 @@ public class ShelterService {
     public ShelterResponse createNew(CreateShelterRequest shelter) {
         Shelter newShelter = new Shelter(shelter.getEmail(), passwordEncoder.encode(shelter.getPassword()),
                 shelter.getName(), shelter.getLocation());
+
+        newShelter.addRole(new Role(SHELTER.code));
         newShelter = shelterRepository.save(newShelter);
         return new ShelterResponse(newShelter);
     }

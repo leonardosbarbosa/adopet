@@ -28,7 +28,6 @@ public class Shelter extends User {
         super(email, password);
         this.name = name;
         this.location = location;
-        this.getRoles().add(new Role(2L));
     }
 
     public void updateFields(UpdateShelterRequest shelterDTO) {
