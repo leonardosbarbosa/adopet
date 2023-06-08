@@ -11,6 +11,7 @@ O Adopet é uma plataforma fictícia para conectar pessoas que desejam adotar an
 - Maven
 - JUnit 5 
 - Postgres DB
+- Flyway
 
 # Autor
 Leonardo da Silva Barbosa<br>
