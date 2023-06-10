@@ -27,11 +27,14 @@ public class TutorService {
     private final TutorRepository tutorRepository;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
+    private final AuthService authService;
 
-    public TutorService(TutorRepository tutorRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder) {
+    public TutorService(TutorRepository tutorRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder,
+                        AuthService authService) {
         this.tutorRepository = tutorRepository;
         this.modelMapper = modelMapper;
         this.passwordEncoder = passwordEncoder;
+        this.authService = authService;
     }
 
     public Page<TutorDTO> findAll(Pageable pageRequest) {
@@ -92,6 +95,7 @@ public class TutorService {
     public TutorDTO findById(Long id) {
         Tutor tutor = tutorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(NONEXISTENT_TUTOR_MESSAGE));
+        authService.validateSelfOrAdmin(tutor.getId());
         return new TutorDTO(tutor);
     }
 }

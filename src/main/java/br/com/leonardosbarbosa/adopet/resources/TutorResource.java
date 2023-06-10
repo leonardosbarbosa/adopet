@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -28,6 +29,7 @@ public class TutorResource {
         return ResponseEntity.ok(tutorService.findAll(pageRequest));
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_TUTOR')")
     @GetMapping("{id}")
     public ResponseEntity<TutorDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(tutorService.findById(id));

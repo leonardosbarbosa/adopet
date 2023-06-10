@@ -1,10 +1,7 @@
 package br.com.leonardosbarbosa.adopet.entities;
 
 import br.com.leonardosbarbosa.adopet.dto.TutorDTO;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -27,7 +24,7 @@ public class Tutor extends User {
     private String city;
     private String about;
     private String profilePic;
-    @OneToMany(mappedBy = "tutor")
+    @OneToMany(mappedBy = "tutor", fetch = FetchType.EAGER)
     private final List<Adoption> adoptions = new ArrayList<>();
 
     public Tutor(TutorDTO tutor) {
