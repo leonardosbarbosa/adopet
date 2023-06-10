@@ -1,4 +1,4 @@
-package br.com.leonardosbarbosa.adopet.dto.request;
+package br.com.leonardosbarbosa.adopet.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
