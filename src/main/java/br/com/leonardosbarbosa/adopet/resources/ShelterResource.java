@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -28,6 +29,7 @@ public class ShelterResource {
         return ResponseEntity.ok(shelterService.findAll(pageRequest));
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SHELTER')")
     @GetMapping("{id}")
     public ResponseEntity<ShelterResponse> findById(@PathVariable Long id) {
         return ResponseEntity.ok(shelterService.findById(id));
@@ -42,7 +44,7 @@ public class ShelterResource {
 
         return ResponseEntity.created(uri).body(createdShelter);
     }
-
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_SHELTER')")
     @PutMapping("{id}")
     public ResponseEntity<ShelterResponse> updateById(@PathVariable Long id,
                                                       @RequestBody @Valid UpdateShelterRequest shelter) {

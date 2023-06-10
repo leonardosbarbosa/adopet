@@ -1,9 +1,6 @@
 package br.com.leonardosbarbosa.adopet.config.errors;
 
-import br.com.leonardosbarbosa.adopet.config.errors.exceptions.BusinessException;
-import br.com.leonardosbarbosa.adopet.config.errors.exceptions.DatabaseException;
-import br.com.leonardosbarbosa.adopet.config.errors.exceptions.DuplicatedEmailException;
-import br.com.leonardosbarbosa.adopet.config.errors.exceptions.ResourceNotFoundException;
+import br.com.leonardosbarbosa.adopet.config.errors.exceptions.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -67,6 +64,17 @@ public class GlobalExceptionHandler {
         StandardError error = new StandardError();
         error.setTimestamp(Instant.now());
         error.setError("Business Exception");
+        error.setMessage(e.getMessage());
+        error.setPath(request.getRequestURI());
+        return ResponseEntity.status(status).body(error);
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<StandardError> businessException(ForbiddenException e, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.FORBIDDEN;
+        StandardError error = new StandardError();
+        error.setTimestamp(Instant.now());
+        error.setError("Forbidden Exception");
         error.setMessage(e.getMessage());
         error.setPath(request.getRequestURI());
         return ResponseEntity.status(status).body(error);

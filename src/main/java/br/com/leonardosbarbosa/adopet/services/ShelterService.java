@@ -22,10 +22,12 @@ public class ShelterService {
 
     private final ShelterRepository shelterRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AuthService authService;
 
-    public ShelterService(ShelterRepository shelterRepository, PasswordEncoder passwordEncoder) {
+    public ShelterService(ShelterRepository shelterRepository, PasswordEncoder passwordEncoder, AuthService authService) {
         this.shelterRepository = shelterRepository;
         this.passwordEncoder = passwordEncoder;
+        this.authService = authService;
     }
 
     public ShelterResponse createNew(CreateShelterRequest shelter) {
@@ -40,7 +42,7 @@ public class ShelterService {
     public ShelterResponse findById(Long id) {
         Shelter shelter = shelterRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(NONEXISTENT_SHELTER_MESSAGE));
-
+        authService.validateSelfOrAdmin(shelter.getId());
         return new ShelterResponse(shelter);
     }
 
