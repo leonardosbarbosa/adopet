@@ -1,11 +1,14 @@
 package br.com.leonardosbarbosa.adopet.entities;
 
 import br.com.leonardosbarbosa.adopet.dto.TutorDTO;
+import br.com.leonardosbarbosa.adopet.dto.request.CreateTutorRequest;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static br.com.leonardosbarbosa.adopet.services.enums.RolesEnum.TUTOR;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -33,5 +36,12 @@ public class Tutor extends User {
         this.phone = tutor.getPhone();
         this.city = tutor.getCity();
         this.about = tutor.getAbout();
+    }
+
+    public Tutor(CreateTutorRequest tutor) {
+        this.fullName = tutor.getFullName();
+        this.setEmail(tutor.getEmail());
+        this.setPassword(tutor.getPassword());
+        this.addRole(new Role(TUTOR.code));
     }
 }

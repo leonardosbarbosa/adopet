@@ -5,7 +5,6 @@ import br.com.leonardosbarbosa.adopet.config.errors.exceptions.ResourceNotFoundE
 import br.com.leonardosbarbosa.adopet.dto.TutorDTO;
 import br.com.leonardosbarbosa.adopet.dto.request.CreateTutorRequest;
 import br.com.leonardosbarbosa.adopet.dto.response.CreateTutorResponse;
-import br.com.leonardosbarbosa.adopet.entities.Role;
 import br.com.leonardosbarbosa.adopet.entities.Tutor;
 import br.com.leonardosbarbosa.adopet.repositories.TutorRepository;
 import org.modelmapper.ModelMapper;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Service;
 import static br.com.leonardosbarbosa.adopet.config.errors.messages.DefaultMessages.CREATE_RESOURCE_INTEGRITY_VIOLATION_MESSAGE;
 import static br.com.leonardosbarbosa.adopet.config.errors.messages.TutorErrorMessages.NONEXISTENT_TUTOR_MESSAGE;
 import static br.com.leonardosbarbosa.adopet.config.errors.messages.TutorErrorMessages.NONEXISTENT_TUTOR_TO_DELETE;
-import static br.com.leonardosbarbosa.adopet.services.enums.RolesEnum.TUTOR;
 
 @Service
 public class TutorService {
@@ -45,11 +43,10 @@ public class TutorService {
 
     public CreateTutorResponse createNew(CreateTutorRequest tutor) {
         try {
-            Tutor tutorEntity = modelMapper.map(tutor, Tutor.class);
-            tutorEntity.setPassword(passwordEncoder.encode(tutor.getPassword()));
-            tutorEntity.addRole(new Role(TUTOR.code));
+            tutor.setPassword(passwordEncoder.encode(tutor.getPassword()));
+            Tutor tutorEntity = new Tutor(tutor);
             tutorEntity = tutorRepository.save(tutorEntity);
-            return modelMapper.map(tutorEntity, CreateTutorResponse.class);
+            return new CreateTutorResponse(tutorEntity);
 
         } catch (DataIntegrityViolationException e) {
             throw new DatabaseException(CREATE_RESOURCE_INTEGRITY_VIOLATION_MESSAGE);
