@@ -7,7 +7,6 @@ import br.com.leonardosbarbosa.adopet.dto.request.CreateTutorRequest;
 import br.com.leonardosbarbosa.adopet.dto.response.CreateTutorResponse;
 import br.com.leonardosbarbosa.adopet.entities.Tutor;
 import br.com.leonardosbarbosa.adopet.repositories.TutorRepository;
-import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -23,14 +22,12 @@ import static br.com.leonardosbarbosa.adopet.config.errors.messages.TutorErrorMe
 public class TutorService {
 
     private final TutorRepository tutorRepository;
-    private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
     private final AuthService authService;
 
-    public TutorService(TutorRepository tutorRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder,
+    public TutorService(TutorRepository tutorRepository, PasswordEncoder passwordEncoder,
                         AuthService authService) {
         this.tutorRepository = tutorRepository;
-        this.modelMapper = modelMapper;
         this.passwordEncoder = passwordEncoder;
         this.authService = authService;
     }
@@ -39,6 +36,13 @@ public class TutorService {
         Page<Tutor> tutorsPage = tutorRepository.findAll(pageRequest);
 
         return tutorsPage.map(TutorDTO::new);
+    }
+
+    public TutorDTO findById(Long id) {
+        Tutor tutor = tutorRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(NONEXISTENT_TUTOR_MESSAGE));
+        authService.validateSelfOrAdmin(tutor.getId());
+        return new TutorDTO(tutor);
     }
 
     public CreateTutorResponse createNew(CreateTutorRequest tutor) {
@@ -87,12 +91,5 @@ public class TutorService {
         if (dto.getAbout() != null) {
             entity.setAbout(dto.getAbout());
         }
-    }
-
-    public TutorDTO findById(Long id) {
-        Tutor tutor = tutorRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(NONEXISTENT_TUTOR_MESSAGE));
-        authService.validateSelfOrAdmin(tutor.getId());
-        return new TutorDTO(tutor);
     }
 }
