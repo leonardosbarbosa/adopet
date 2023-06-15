@@ -1,5 +1,6 @@
 package br.com.leonardosbarbosa.adopet.services;
 
+import br.com.leonardosbarbosa.adopet.config.errors.exceptions.DatabaseException;
 import br.com.leonardosbarbosa.adopet.config.errors.exceptions.ResourceNotFoundException;
 import br.com.leonardosbarbosa.adopet.dto.TutorDTO;
 import br.com.leonardosbarbosa.adopet.dto.request.CreateTutorRequest;
@@ -14,6 +15,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -55,16 +58,17 @@ public class TutorServiceTests {
     }
 
     @Test
-    public void findByIdShouldReturnTutorDTO() {
+    public void findByIdShouldReturnTutorDTOWhenIdExists() {
         when(tutorRepository.findById(existentId)).thenReturn(Optional.of(tutor));
         doNothing().when(authService).validateSelfOrAdmin(anyLong());
 
         TutorDTO response = tutorService.findById(existentId);
         assertNotNull(response);
+        assertEquals(response.getFullName(), tutor.getFullName());
     }
 
     @Test
-    public void findByIdShouldThrowResourceNotFoundException() {
+    public void findByIdShouldThrowResourceNotFoundExceptionWhenIdDoesNotExists() {
         when(tutorRepository.findById(nonexistentId)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> tutorService.findById(nonexistentId));
@@ -80,5 +84,52 @@ public class TutorServiceTests {
         CreateTutorResponse response = tutorService.createNew(newTutorDTO);
 
         assertNotNull(response);
+        assertEquals(response.getFullName(), newTutorEntity.getFullName());
+    }
+
+    @Test
+    public void createTutorShouldThrowDatabaseExceptionWhenExistentEmail() {
+        CreateTutorRequest newTutorDTO = TutorFactory.createTutorRequest();
+        Tutor tutorWithExistentEmail = TutorFactory.createTutorWithId();
+        when(tutorRepository.save(any(Tutor.class))).thenThrow(DataIntegrityViolationException.class);
+        when(passwordEncoder.encode(anyString())).thenReturn(tutorWithExistentEmail.getPassword());
+
+        assertThrows(DatabaseException.class, () -> tutorService.createNew(newTutorDTO));
+    }
+
+    @Test
+    public void updateTutorByIdShouldReturnUpdatedTutorWhenExistentId() {
+        TutorDTO tutorDTO = TutorFactory.createTutorDTO();
+        Tutor existentTutor = TutorFactory.createTutorWithId();
+        when(tutorRepository.findById(existentId)).thenReturn(Optional.of(existentTutor));
+        when(tutorRepository.save(any(Tutor.class))).thenReturn(existentTutor);
+
+        tutorDTO = tutorService.update(existentId, tutorDTO);
+
+        assertNotNull(tutorDTO);
+        assertEquals(tutorDTO.getFullName(), existentTutor.getFullName());
+    }
+
+    @Test
+    public void updateTutorByIdShouldThrowResourceNotFoundExceptionWhenIdDoesNotExists() {
+        TutorDTO tutorDTO = TutorFactory.createTutorDTO();
+
+        when(tutorRepository.findById(nonexistentId)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> tutorService.update(nonexistentId, tutorDTO));
+    }
+
+    @Test
+    public void deleteTutorByIdShouldDoNothingWhenExistentId() {
+        doNothing().when(tutorRepository).deleteById(existentId);
+
+        assertDoesNotThrow(() -> tutorService.delete(existentId));
+    }
+
+    @Test
+    public void deleteTutorByIdShouldThrowResourceNotFoundExceptionWhenNonExistentId() {
+        doThrow(EmptyResultDataAccessException.class).when(tutorRepository).deleteById(nonexistentId);
+
+        assertThrows(ResourceNotFoundException.class, () -> tutorService.delete(nonexistentId));
     }
 }
