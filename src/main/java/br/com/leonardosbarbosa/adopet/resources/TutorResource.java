@@ -43,18 +43,20 @@ public class TutorResource {
 
         return ResponseEntity.created(uri).body(createdTutor);
     }
+
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_TUTOR')")
     @PutMapping("{id}")
     public ResponseEntity<TutorDTO> updateById(@PathVariable Long id, @RequestBody @Valid TutorDTO tutor) {
-        tutor = tutorService.update(id, tutor);
+        tutor = tutorService.updateById(id, tutor);
 
         return ResponseEntity.ok(tutor);
     }
+
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("{id}")
     public ResponseEntity<Void> deleteById(@PathVariable Long id) {
 
-        tutorService.delete(id);
+        tutorService.deleteById(id);
 
         return ResponseEntity.noContent().build();
     }

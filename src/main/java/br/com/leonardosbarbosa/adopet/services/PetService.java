@@ -27,16 +27,6 @@ public class PetService {
         this.petRepository = petRepository;
     }
 
-    public PetDTO createNew(PetDTO pet) {
-        try {
-            Pet entity = new Pet(pet);
-            entity = petRepository.save(entity);
-            return new PetDTO(entity);
-        } catch (DataIntegrityViolationException e) {
-            throw new DatabaseException(CREATE_RESOURCE_INTEGRITY_VIOLATION_MESSAGE);
-        }
-    }
-
     public Page<PetDTO> findAll(Pageable pageRequest) {
         Page<Pet> pets = petRepository.findAll(pageRequest);
 
@@ -51,6 +41,16 @@ public class PetService {
                 .orElseThrow(() -> new ResourceNotFoundException(NONEXISTENT_PET_MESSAGE));
 
         return new PetDTO(pet);
+    }
+
+    public PetDTO createNew(PetDTO pet) {
+        try {
+            Pet entity = new Pet(pet);
+            entity = petRepository.save(entity);
+            return new PetDTO(entity);
+        } catch (DataIntegrityViolationException e) {
+            throw new DatabaseException(CREATE_RESOURCE_INTEGRITY_VIOLATION_MESSAGE);
+        }
     }
 
     public PetDTO updateById(Long id, PetDTO pet) {

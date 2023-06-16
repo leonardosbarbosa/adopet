@@ -30,13 +30,13 @@ public class ShelterService {
         this.authService = authService;
     }
 
-    public ShelterResponse createNew(CreateShelterRequest shelter) {
-        Shelter newShelter = new Shelter(shelter.getEmail(), passwordEncoder.encode(shelter.getPassword()),
-                shelter.getName(), shelter.getLocation());
+    public Page<ShelterResponse> findAll(Pageable pageRequest) {
+        Page<Shelter> sheltersPaged = shelterRepository.findAll(pageRequest);
 
-        newShelter.addRole(new Role(SHELTER.code));
-        newShelter = shelterRepository.save(newShelter);
-        return new ShelterResponse(newShelter);
+        if (sheltersPaged.isEmpty())
+            throw new ResourceNotFoundException(NO_SHELTERS_REGISTERED_MESSAGE);
+
+        return sheltersPaged.map(ShelterResponse::new);
     }
 
     public ShelterResponse findById(Long id) {
@@ -46,13 +46,13 @@ public class ShelterService {
         return new ShelterResponse(shelter);
     }
 
-    public Page<ShelterResponse> findAll(Pageable pageRequest) {
-        Page<Shelter> sheltersPaged = shelterRepository.findAll(pageRequest);
+    public ShelterResponse createNew(CreateShelterRequest shelter) {
+        Shelter newShelter = new Shelter(shelter.getEmail(), passwordEncoder.encode(shelter.getPassword()),
+                shelter.getName(), shelter.getLocation());
 
-        if (sheltersPaged.isEmpty())
-            throw new ResourceNotFoundException(NO_SHELTERS_REGISTERED_MESSAGE);
-
-        return sheltersPaged.map(ShelterResponse::new);
+        newShelter.addRole(new Role(SHELTER.code));
+        newShelter = shelterRepository.save(newShelter);
+        return new ShelterResponse(newShelter);
     }
 
     public ShelterResponse updateById(Long id, UpdateShelterRequest shelter) {

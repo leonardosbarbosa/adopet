@@ -104,7 +104,7 @@ public class TutorServiceTests {
         when(tutorRepository.findById(existentId)).thenReturn(Optional.of(existentTutor));
         when(tutorRepository.save(any(Tutor.class))).thenReturn(existentTutor);
 
-        tutorDTO = tutorService.update(existentId, tutorDTO);
+        tutorDTO = tutorService.updateById(existentId, tutorDTO);
 
         assertNotNull(tutorDTO);
         assertEquals(tutorDTO.getFullName(), existentTutor.getFullName());
@@ -116,20 +116,20 @@ public class TutorServiceTests {
 
         when(tutorRepository.findById(nonexistentId)).thenReturn(Optional.empty());
 
-        assertThrows(ResourceNotFoundException.class, () -> tutorService.update(nonexistentId, tutorDTO));
+        assertThrows(ResourceNotFoundException.class, () -> tutorService.updateById(nonexistentId, tutorDTO));
     }
 
     @Test
     public void deleteTutorByIdShouldDoNothingWhenExistentId() {
         doNothing().when(tutorRepository).deleteById(existentId);
 
-        assertDoesNotThrow(() -> tutorService.delete(existentId));
+        assertDoesNotThrow(() -> tutorService.deleteById(existentId));
     }
 
     @Test
     public void deleteTutorByIdShouldThrowResourceNotFoundExceptionWhenNonExistentId() {
         doThrow(EmptyResultDataAccessException.class).when(tutorRepository).deleteById(nonexistentId);
 
-        assertThrows(ResourceNotFoundException.class, () -> tutorService.delete(nonexistentId));
+        assertThrows(ResourceNotFoundException.class, () -> tutorService.deleteById(nonexistentId));
     }
 }

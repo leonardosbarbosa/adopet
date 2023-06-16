@@ -57,7 +57,7 @@ public class TutorService {
         }
     }
 
-    public TutorDTO update(Long id, TutorDTO dto) {
+    public TutorDTO updateById(Long id, TutorDTO dto) {
         Tutor tutorEntity = tutorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(NONEXISTENT_TUTOR_MESSAGE));
         copyDtoToEntity(dto, tutorEntity);
@@ -65,7 +65,7 @@ public class TutorService {
         return new TutorDTO(tutorEntity);
     }
 
-    public void delete(Long id) {
+    public void deleteById(Long id) {
         try {
             tutorRepository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
