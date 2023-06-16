@@ -1,5 +1,6 @@
 package br.com.leonardosbarbosa.adopet.services;
 
+import br.com.leonardosbarbosa.adopet.config.errors.exceptions.DatabaseException;
 import br.com.leonardosbarbosa.adopet.config.errors.exceptions.ResourceNotFoundException;
 import br.com.leonardosbarbosa.adopet.dto.request.CreateShelterRequest;
 import br.com.leonardosbarbosa.adopet.dto.request.UpdateShelterRequest;
@@ -7,12 +8,14 @@ import br.com.leonardosbarbosa.adopet.dto.response.ShelterResponse;
 import br.com.leonardosbarbosa.adopet.entities.Role;
 import br.com.leonardosbarbosa.adopet.entities.Shelter;
 import br.com.leonardosbarbosa.adopet.repositories.ShelterRepository;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import static br.com.leonardosbarbosa.adopet.config.errors.messages.DefaultMessages.CREATE_RESOURCE_INTEGRITY_VIOLATION_MESSAGE;
 import static br.com.leonardosbarbosa.adopet.config.errors.messages.ShelterErrorMessages.NONEXISTENT_SHELTER_MESSAGE;
 import static br.com.leonardosbarbosa.adopet.config.errors.messages.ShelterErrorMessages.NO_SHELTERS_REGISTERED_MESSAGE;
 import static br.com.leonardosbarbosa.adopet.services.enums.RolesEnum.SHELTER;
@@ -47,12 +50,16 @@ public class ShelterService {
     }
 
     public ShelterResponse createNew(CreateShelterRequest shelter) {
-        Shelter newShelter = new Shelter(shelter.getEmail(), passwordEncoder.encode(shelter.getPassword()),
-                shelter.getName(), shelter.getLocation());
+        try {
+            Shelter newShelter = new Shelter(shelter.getEmail(), passwordEncoder.encode(shelter.getPassword()),
+                    shelter.getName(), shelter.getLocation());
 
-        newShelter.addRole(new Role(SHELTER.code));
-        newShelter = shelterRepository.save(newShelter);
-        return new ShelterResponse(newShelter);
+            newShelter.addRole(new Role(SHELTER.code));
+            newShelter = shelterRepository.save(newShelter);
+            return new ShelterResponse(newShelter);
+        } catch (DataIntegrityViolationException e) {
+            throw new DatabaseException(CREATE_RESOURCE_INTEGRITY_VIOLATION_MESSAGE);
+        }
     }
 
     public ShelterResponse updateById(Long id, UpdateShelterRequest shelter) {
