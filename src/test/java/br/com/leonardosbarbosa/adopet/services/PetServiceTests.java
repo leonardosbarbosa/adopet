@@ -1,5 +1,6 @@
 package br.com.leonardosbarbosa.adopet.services;
 
+import br.com.leonardosbarbosa.adopet.config.errors.exceptions.BusinessException;
 import br.com.leonardosbarbosa.adopet.config.errors.exceptions.DatabaseException;
 import br.com.leonardosbarbosa.adopet.config.errors.exceptions.ResourceNotFoundException;
 import br.com.leonardosbarbosa.adopet.dto.PetDTO;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 
 import java.util.List;
 import java.util.Optional;
@@ -85,4 +87,53 @@ public class PetServiceTests {
 
         assertThrows(DatabaseException.class, () -> petService.createNew(petRequest));
     }
+
+    @Test
+    public void updatePetByIdShouldReturnPetWhenValidUpdateFields() {
+        PetDTO pet = new PetDTO(PetFactory.createPet());
+        when(petRepository.findById(existentId)).thenReturn(Optional.of(savedPet));
+        when(petRepository.save(any(Pet.class))).thenReturn(savedPet);
+
+        PetDTO response = petService.updateById(existentId, pet);
+
+        assertNotNull(response);
+    }
+
+    @Test
+    public void updatePetByIdShouldThrowResourceNotFoundExceptionWhenNonExistentId() {
+        PetDTO pet = new PetDTO(PetFactory.createPet());
+
+        when(petRepository.findById(nonexistentId)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> petService.updateById(nonexistentId, pet));
+    }
+
+    @Test
+    public void updatePetByIdShouldThrowBusinessExceptionWhenInvalidShelter() {
+        PetDTO petWithInvalidShelterId = new PetDTO(PetFactory.createPet());
+        Long nonexistentShelterId = 200L;
+        petWithInvalidShelterId.setShelterId(nonexistentShelterId);
+
+
+        when(petRepository.findById(existentId)).thenReturn(Optional.of(savedPet));
+        doThrow(JpaObjectRetrievalFailureException.class).when(petRepository).save(savedPet);
+
+        assertThrows(BusinessException.class, () -> petService.updateById(existentId, petWithInvalidShelterId));
+    }
+
+    @Test
+    public void deletePetByIdShouldDoNothingWhenExistentId() {
+        doNothing().when(petRepository).deleteById(existentId);
+
+        assertDoesNotThrow(() -> petRepository.deleteById(existentId));
+    }
+
+    @Test
+    public void deleteByIdShouldThrowDatabaseExceptionWhenDataIntegrityViolation() {
+        Long petIdBelongingToAShelter = 3L;
+        doThrow(DataIntegrityViolationException.class).when(petRepository).deleteById(petIdBelongingToAShelter);
+
+        assertThrows(DatabaseException.class, () -> petService.deleteById(petIdBelongingToAShelter));
+    }
+
 }
