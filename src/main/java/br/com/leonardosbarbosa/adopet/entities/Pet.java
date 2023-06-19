@@ -36,8 +36,7 @@ public class Pet {
         this.age = pet.getAge();
         this.adopted = false;
         this.image = pet.getImage();
-        this.shelter = new Shelter();
-        this.shelter.setId(pet.getShelterId());
+        this.shelter = new Shelter(pet.getShelterId());
     }
 
     public void updateFields(PetDTO pet) {
@@ -51,7 +50,6 @@ public class Pet {
         if (pet.getImage() != null)
             this.image = pet.getImage();
 
-        this.shelter = new Shelter();
-        this.shelter.setId(pet.getShelterId());
+        this.shelter = new Shelter(pet.getShelterId());
     }
 }

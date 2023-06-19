@@ -24,6 +24,10 @@ public class Shelter extends User {
     @OneToMany(mappedBy = "shelter", fetch = FetchType.EAGER)
     private final List<Pet> pets = new ArrayList<>();
 
+    public Shelter(Long id) {
+        super(id);
+    }
+
     public Shelter(String email, String password, String name, String location) {
         super(email, password);
         this.name = name;
