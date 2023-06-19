@@ -7,7 +7,6 @@ import br.com.leonardosbarbosa.adopet.dto.PetDTO;
 import br.com.leonardosbarbosa.adopet.entities.Pet;
 import br.com.leonardosbarbosa.adopet.repositories.PetRepository;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
@@ -15,7 +14,8 @@ import org.springframework.stereotype.Service;
 
 import static br.com.leonardosbarbosa.adopet.config.errors.messages.DefaultMessages.CREATE_RESOURCE_INTEGRITY_VIOLATION_MESSAGE;
 import static br.com.leonardosbarbosa.adopet.config.errors.messages.DefaultMessages.DELETE_RESOURCE_INTEGRITY_VIOLATION_MESSAGE;
-import static br.com.leonardosbarbosa.adopet.config.errors.messages.PetErrorMessages.*;
+import static br.com.leonardosbarbosa.adopet.config.errors.messages.PetErrorMessages.NONEXISTENT_PET_MESSAGE;
+import static br.com.leonardosbarbosa.adopet.config.errors.messages.PetErrorMessages.NO_PETS_REGISTERED_MESSAGE;
 import static br.com.leonardosbarbosa.adopet.config.errors.messages.ShelterErrorMessages.NONEXISTENT_SHELTER_MESSAGE;
 
 @Service
@@ -69,8 +69,6 @@ public class PetService {
     public void deleteById(Long id) {
         try {
             petRepository.deleteById(id);
-        } catch (EmptyResultDataAccessException e) {
-            throw new ResourceNotFoundException(NONEXISTENT_PET_MESSAGE);
         } catch (DataIntegrityViolationException e) {
             throw new DatabaseException(DELETE_RESOURCE_INTEGRITY_VIOLATION_MESSAGE);
         }
