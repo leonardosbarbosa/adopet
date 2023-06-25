@@ -21,6 +21,15 @@ public class PetFactory {
         return pet;
     }
 
+    public static Pet createPetWith(Long id, String name, String description) {
+        Pet pet = new Pet();
+        pet.setId(id);
+        pet.setName(name);
+        pet.setDescription(description);
+
+        return pet;
+    }
+
     public static PetDTO createPetDTORequest() {
         return new PetDTO(createPet());
     }

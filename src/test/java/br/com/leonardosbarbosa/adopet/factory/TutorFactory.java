@@ -18,6 +18,18 @@ public class TutorFactory {
         return tutor;
     }
 
+    public static Tutor createTutorWith(Long id, String fullname, String about, String phone, String city) {
+        Tutor tutor = Tutor.builder()
+                .fullName(fullname)
+                .about(about)
+                .phone(phone)
+                .city(city)
+                .build();
+
+        tutor.setId(id);
+        return tutor;
+    }
+
     public static CreateTutorRequest createTutorRequest() {
         CreateTutorRequest tutor = new CreateTutorRequest();
         tutor.setFullName("Leonardo Barbosa");
