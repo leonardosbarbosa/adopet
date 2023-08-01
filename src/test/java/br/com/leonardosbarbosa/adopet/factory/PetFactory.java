@@ -11,6 +11,8 @@ public class PetFactory {
         pet.setAdopted(false);
         pet.setName("Rex");
         pet.setDescription("Agitado e dócil");
+        pet.setAge(2);
+        pet.setImage("images/rex.png");
         pet.setShelter(new Shelter(1L));
         return pet;
     }

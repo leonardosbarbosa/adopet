@@ -7,6 +7,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("pets")
@@ -32,7 +35,9 @@ public class PetResource {
     @PostMapping
     public ResponseEntity<PetDTO> createNew(@RequestBody @Valid PetDTO pet) {
         pet = petService.createNew(pet);
-        return ResponseEntity.ok(pet);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(pet.getId()).toUri();
+        return ResponseEntity.created(uri).body(pet);
     }
 
     @PutMapping("{id}")
